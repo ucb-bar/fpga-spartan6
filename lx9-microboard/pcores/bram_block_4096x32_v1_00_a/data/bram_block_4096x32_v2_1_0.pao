@@ -1,0 +1,7 @@
+##############################################################################
+## Filename:          /scratch/a_ou/lx9/pcores/bram_block_4096x32_v1_00_a/data/bram_block_4096x32_v2_1_0.pao
+## Description:       Peripheral Analysis Order
+## Date:              Wed Jun 24 22:53:15 2015 (by Create and Import Peripheral Wizard)
+##############################################################################
+
+lib bram_block_4096x32_v1_00_a bram_block_4096x32 verilog

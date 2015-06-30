@@ -1,0 +1,7 @@
+##############################################################################
+## Filename:          /scratch/a_ou/fpga-lx9-test/pcores/poci_gpio_x4_v1_00_a/data/poci_gpio_x4_v2_1_0.pao
+## Description:       Peripheral Analysis Order
+## Date:              Mon Jun 29 12:00:14 2015 (by Create and Import Peripheral Wizard)
+##############################################################################
+
+lib poci_gpio_x4_v1_00_a poci_gpio_x4 verilog

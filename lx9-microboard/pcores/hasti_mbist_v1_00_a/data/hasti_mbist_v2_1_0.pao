@@ -1,0 +1,7 @@
+##############################################################################
+## Filename:          /scratch/a_ou/lx9/pcores/hasti_mbist_v1_00_a/data/hasti_mbist_v2_1_0.pao
+## Description:       Peripheral Analysis Order
+## Date:              Thu Jun 25 00:14:58 2015 (by Create and Import Peripheral Wizard)
+##############################################################################
+
+lib hasti_mbist_v1_00_a hasti_mbist verilog

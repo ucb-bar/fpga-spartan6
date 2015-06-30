@@ -1,0 +1,317 @@
+
+ PARAMETER VERSION = 2.1.0
+
+
+ PORT CLOCK_Y2 = CLOCK_Y2, DIR = I, SIGIS = CLK, CLK_FREQ = 66666666
+ PORT USER_RESET = USER_RESET, DIR = I, SIGIS = RST
+ PORT LPDDR_A = LPDDR_A, DIR = O, VEC = [12:0]
+ PORT LPDDR_BA = LPDDR_BA, DIR = O, VEC = [1:0]
+ PORT LPDDR_RAS_n = LPDDR_RAS_n, DIR = O
+ PORT LPDDR_CAS_n = LPDDR_CAS_n, DIR = O
+ PORT LPDDR_WE_n = LPDDR_WE_n, DIR = O
+ PORT LPDDR_CKE = LPDDR_CKE, DIR = O
+ PORT LPDDR_CK_P = LPDDR_CK_P, DIR = O, SIGIS = CLK
+ PORT LPDDR_CK_N = LPDDR_CK_N, DIR = O, SIGIS = CLK
+ PORT LPDDR_DQ = LPDDR_DQ, DIR = IO, VEC = [15:0]
+ PORT LPDDR_LDQS = LPDDR_LDQS, DIR = IO
+ PORT LPDDR_UDQS = LPDDR_UDQS, DIR = IO
+ PORT LPDDR_UDM = LPDDR_UDM, DIR = O
+ PORT LPDDR_LDM = LPDDR_LDM, DIR = O
+ PORT LPDDR_RZQ = LPDDR_RZQ, DIR = IO
+ PORT SPI_SCK = axi_quad_spi_0_SCK, DIR = IO
+ PORT SPI_CS_n = axi_quad_spi_0_SS, DIR = IO, VEC = [0:0]
+ PORT SPI_IO1 = axi_quad_spi_0_IO0, DIR = IO
+ PORT SPI_IO2 = axi_quad_spi_0_IO1, DIR = IO
+ PORT SPI_IO3 = axi_quad_spi_0_IO2, DIR = IO
+ PORT SPI_IO4 = axi_quad_spi_0_IO3, DIR = IO
+ PORT GPIO_LED = GPIO_LED, DIR = O, VEC = [3:0]
+
+
+BEGIN clock_generator
+ PARAMETER INSTANCE = clock_generator_0
+ PARAMETER HW_VER = 4.03.a
+ PARAMETER C_CLKIN_FREQ = 66666666
+ PARAMETER C_FAMILY = spartan6
+ PARAMETER C_SPEEDGRADE = -2
+ PARAMETER C_CLKOUT3_DUTY_CYCLE = 0.500000
+ PARAMETER C_CLKOUT0_FREQ = 400000000
+ PARAMETER C_CLKOUT0_GROUP = PLL0
+ PARAMETER C_CLKOUT0_BUF = FALSE
+ PARAMETER C_CLKOUT1_FREQ = 400000000
+ PARAMETER C_CLKOUT1_PHASE = 180
+ PARAMETER C_CLKOUT1_GROUP = PLL0
+ PARAMETER C_CLKOUT1_BUF = FALSE
+ PARAMETER C_CLKOUT2_FREQ = 33333333
+ PARAMETER C_CLKOUT2_GROUP = PLL0
+ PORT CLKIN = CLOCK_Y2
+ PORT RST = USER_RESET
+ PORT LOCKED = clock_generator_0_LOCKED
+ PORT CLKOUT0 = clock_generator_0_CLKOUT0
+ PORT CLKOUT1 = clock_generator_0_CLKOUT1
+ PORT CLKOUT2 = clock_generator_0_CLKOUT2
+END
+
+BEGIN proc_sys_reset
+ PARAMETER INSTANCE = reset_0
+ PARAMETER HW_VER = 3.00.a
+ PORT Ext_Reset_In = USER_RESET
+ PORT Dcm_locked = clock_generator_0_LOCKED
+ PORT Slowest_sync_clk = clock_generator_0_CLKOUT2
+ PORT Bus_Struct_Reset = reset_0_Bus_Struct_Reset
+ PORT Interconnect_aresetn = reset_0_Interconnect_aresetn
+ PORT MB_Reset = reset_0_MB_Reset
+END
+
+BEGIN axi_s6_ddrx
+ PARAMETER INSTANCE = axi_s6_lpddr
+ PARAMETER HW_VER = 1.06.a
+ PARAMETER C_S0_AXI_BASEADDR = 0x10000000
+ PARAMETER C_S0_AXI_HIGHADDR = 0x13FFFFFF
+ PARAMETER C_INTERCONNECT_S0_AXI_AW_REGISTER = 8
+ PARAMETER C_INTERCONNECT_S0_AXI_AR_REGISTER = 8
+ PARAMETER C_INTERCONNECT_S0_AXI_W_REGISTER = 8
+ PARAMETER C_INTERCONNECT_S0_AXI_R_REGISTER = 8
+ PARAMETER C_INTERCONNECT_S0_AXI_B_REGISTER = 8
+ PARAMETER C_MCB_RZQ_LOC = N4
+ PARAMETER C_MEM_TYPE = MDDR
+ PARAMETER C_MEM_PARTNO = MT46H32M16XXXX-5
+ PARAMETER C_MEM_BANKADDR_WIDTH = 2
+ PARAMETER C_SKIP_IN_TERM_CAL = 1
+ PARAMETER C_S0_AXI_STRICT_COHERENCY = 0
+ PARAMETER C_INTERCONNECT_S0_AXI_MASTERS = ahblite_axi_bridge_lpddr.M_AXI
+ BUS_INTERFACE S0_AXI = axi_interconnect_lpddr
+ PORT sysclk_2x = clock_generator_0_CLKOUT0
+ PORT sysclk_2x_180 = clock_generator_0_CLKOUT1
+ PORT pll_lock = clock_generator_0_LOCKED
+ PORT sys_rst = reset_0_Bus_Struct_Reset
+ PORT ui_clk = clock_generator_0_CLKOUT2
+ PORT s0_axi_aclk = clock_generator_0_CLKOUT2
+ PORT mcbx_dram_udqs = LPDDR_UDQS
+ PORT mcbx_dram_dqs = LPDDR_LDQS
+ PORT mcbx_dram_dq = LPDDR_DQ
+ PORT mcbx_dram_addr = LPDDR_A
+ PORT mcbx_dram_ba = LPDDR_BA
+ PORT mcbx_dram_cas_n = LPDDR_CAS_n
+ PORT mcbx_dram_cke = LPDDR_CKE
+ PORT mcbx_dram_clk = LPDDR_CK_P
+ PORT mcbx_dram_clk_n = LPDDR_CK_N
+ PORT mcbx_dram_ras_n = LPDDR_RAS_n
+ PORT mcbx_dram_ldm = LPDDR_LDM
+ PORT mcbx_dram_udm = LPDDR_UDM
+ PORT mcbx_dram_we_n = LPDDR_WE_n
+ PORT rzq = LPDDR_RZQ
+END
+
+BEGIN axi_interconnect
+ PARAMETER INSTANCE = axi_interconnect_lpddr
+ PARAMETER HW_VER = 1.06.a
+ PORT INTERCONNECT_ACLK = clock_generator_0_CLKOUT2
+ PORT INTERCONNECT_ARESETN = reset_0_Interconnect_aresetn
+END
+
+BEGIN ahblite_axi_bridge
+ PARAMETER INSTANCE = ahblite_axi_bridge_lpddr
+ PARAMETER HW_VER = 1.00.a
+ PARAMETER C_AHB_AXI_TIMEOUT = 0
+ PARAMETER C_BASEADDR = 0x00000000
+ PARAMETER C_HIGHADDR = 0x03FFFFFF
+ BUS_INTERFACE M_AXI = axi_interconnect_lpddr
+ PORT S_AHB_HCLK = clock_generator_0_CLKOUT2
+ PORT S_AHB_HSEL = zscale_0_io_dram_hsel
+ PORT S_AHB_HREADY_OUT = ahblite_axi_bridge_lpddr_S_AHB_HREADY_OUT
+ PORT S_AHB_HREADY_IN = zscale_0_io_dram_hreadyin
+ PORT S_AHB_HADDR = zscale_0_io_dram_haddr
+ PORT S_AHB_HPROT = zscale_0_io_dram_hprot
+ PORT S_AHB_HTRANS = zscale_0_io_dram_htrans
+ PORT S_AHB_HSIZE = zscale_0_io_dram_hsize
+ PORT S_AHB_HWRITE = zscale_0_io_dram_hwrite
+ PORT S_AHB_HBURST = zscale_0_io_dram_hburst
+ PORT S_AHB_HWDATA = zscale_0_io_dram_hwdata
+ PORT S_AHB_HRDATA = ahblite_axi_bridge_lpddr_S_AHB_HRDATA
+ PORT S_AHB_HRESP = ahblite_axi_bridge_lpddr_S_AHB_HRESP
+END
+
+BEGIN bram_block_4096x32
+ PARAMETER INSTANCE = bram_block_4096x32_0
+ PARAMETER HW_VER = 1.00.a
+ BUS_INTERFACE BRAM = hasti_bram_ctrl_0_BRAM
+END
+
+BEGIN hasti_bram_ctrl
+ PARAMETER INSTANCE = hasti_bram_ctrl_0
+ PARAMETER HW_VER = 1.00.a
+ BUS_INTERFACE BRAM = hasti_bram_ctrl_0_BRAM
+ PORT clk = clock_generator_0_CLKOUT2
+ PORT io_bus_hsel = zscale_0_io_bootmem_hsel
+ PORT io_bus_hreadyout = hasti_bram_ctrl_0_io_bus_hreadyout
+ PORT reset = reset_0_MB_Reset
+ PORT io_bus_haddr = zscale_0_io_bootmem_haddr
+ PORT io_bus_hwrite = zscale_0_io_bootmem_hwrite
+ PORT io_bus_hsize = zscale_0_io_bootmem_hsize
+ PORT io_bus_hburst = zscale_0_io_bootmem_hburst
+ PORT io_bus_hprot = zscale_0_io_bootmem_hprot
+ PORT io_bus_htrans = zscale_0_io_bootmem_htrans
+ PORT io_bus_hwdata = zscale_0_io_bootmem_hwdata
+ PORT io_bus_hrdata = hasti_bram_ctrl_0_io_bus_hrdata
+ PORT io_bus_hreadyin = zscale_0_io_bootmem_hreadyin
+ PORT io_bus_hresp = hasti_bram_ctrl_0_io_bus_hresp
+ PORT io_bus_hmastlock = zscale_0_io_bootmem_hmastlock
+END
+
+BEGIN zscale
+ PARAMETER INSTANCE = zscale_0
+ PARAMETER HW_VER = 1.00.a
+ PORT io_dram_hsel = zscale_0_io_dram_hsel
+ PORT io_dram_hreadyout = ahblite_axi_bridge_lpddr_S_AHB_HREADY_OUT
+ PORT io_dram_hreadyin = zscale_0_io_dram_hreadyin
+ PORT io_dram_haddr = zscale_0_io_dram_haddr
+ PORT io_dram_hprot = zscale_0_io_dram_hprot
+ PORT io_dram_htrans = zscale_0_io_dram_htrans
+ PORT io_dram_hsize = zscale_0_io_dram_hsize
+ PORT io_dram_hwrite = zscale_0_io_dram_hwrite
+ PORT io_dram_hburst = zscale_0_io_dram_hburst
+ PORT io_dram_hwdata = zscale_0_io_dram_hwdata
+ PORT io_dram_hrdata = ahblite_axi_bridge_lpddr_S_AHB_HRDATA
+ PORT io_dram_hresp = ahblite_axi_bridge_lpddr_S_AHB_HRESP
+ PORT io_bootmem_haddr = zscale_0_io_bootmem_haddr
+ PORT io_bootmem_hwrite = zscale_0_io_bootmem_hwrite
+ PORT io_bootmem_hsize = zscale_0_io_bootmem_hsize
+ PORT io_bootmem_hburst = zscale_0_io_bootmem_hburst
+ PORT io_bootmem_hprot = zscale_0_io_bootmem_hprot
+ PORT io_bootmem_htrans = zscale_0_io_bootmem_htrans
+ PORT io_bootmem_hwdata = zscale_0_io_bootmem_hwdata
+ PORT io_bootmem_hrdata = hasti_bram_ctrl_0_io_bus_hrdata
+ PORT io_bootmem_hsel = zscale_0_io_bootmem_hsel
+ PORT io_bootmem_hreadyout = hasti_bram_ctrl_0_io_bus_hreadyout
+ PORT io_bootmem_hreadyin = zscale_0_io_bootmem_hreadyin
+ PORT io_bootmem_hresp = hasti_bram_ctrl_0_io_bus_hresp
+ PORT clk = clock_generator_0_CLKOUT2
+ PORT reset = reset_0_MB_Reset
+ PORT io_host_id = net_gnd
+ PORT io_host_pcr_req_valid = net_gnd
+ PORT io_host_pcr_rep_ready = net_vcc
+ PORT io_host_ipi_req_ready = net_vcc
+ PORT io_host_ipi_rep_valid = net_gnd
+ PORT io_bootmem_hmastlock = zscale_0_io_bootmem_hmastlock
+ PORT io_spi_hsel = zscale_0_io_spi_hsel
+ PORT io_spi_haddr = zscale_0_io_spi_haddr
+ PORT io_spi_hprot = zscale_0_io_spi_hprot
+ PORT io_spi_htrans = zscale_0_io_spi_htrans
+ PORT io_spi_hsize = zscale_0_io_spi_hsize
+ PORT io_spi_hwrite = zscale_0_io_spi_hwrite
+ PORT io_spi_hburst = zscale_0_io_spi_hburst
+ PORT io_spi_hwdata = zscale_0_io_spi_hwdata
+ PORT io_spi_hreadyout = ahblite_axi_bridge_0_S_AHB_HREADY_OUT
+ PORT io_spi_hreadyin = zscale_0_io_spi_hreadyin
+ PORT io_spi_hrdata = ahblite_axi_bridge_0_S_AHB_HRDATA
+ PORT io_spi_hresp = ahblite_axi_bridge_0_S_AHB_HRESP
+ PORT io_jtag_haddr = zscale_0_io_jtag_haddr
+ PORT io_jtag_hwrite = zscale_0_io_jtag_hwrite
+ PORT io_jtag_hsize = zscale_0_io_jtag_hsize
+ PORT io_jtag_hburst = zscale_0_io_jtag_hburst
+ PORT io_jtag_hprot = zscale_0_io_jtag_hprot
+ PORT io_jtag_htrans = zscale_0_io_jtag_htrans
+ PORT io_jtag_hmastlock = zscale_0_io_jtag_hmastlock
+ PORT io_jtag_hwdata = zscale_0_io_jtag_hwdata
+ PORT io_jtag_hrdata = zscale_0_io_jtag_hrdata
+ PORT io_jtag_hready = zscale_0_io_jtag_hready
+ PORT io_jtag_hresp = zscale_0_io_jtag_hresp
+ PORT io_led_paddr = zscale_0_io_led_paddr
+ PORT io_led_pwrite = zscale_0_io_led_pwrite
+ PORT io_led_psel = zscale_0_io_led_psel
+ PORT io_led_pwdata = zscale_0_io_led_pwdata
+ PORT io_led_penable = zscale_0_io_led_penable
+ PORT io_led_prdata = zscale_0_io_led_prdata
+ PORT io_led_pready = zscale_0_io_led_pready
+ PORT io_led_pslverr = zscale_0_io_led_pslverr
+ PORT io_corereset_prdata = net_gnd
+ PORT io_corereset_pready = net_vcc
+ PORT io_corereset_pslverr = net_gnd
+ PORT io_host_reset = reset_0_MB_Reset
+END
+
+BEGIN ahblite_axi_bridge
+ PARAMETER INSTANCE = ahblite_axi_bridge_0
+ PARAMETER HW_VER = 1.00.a
+ PARAMETER C_AHB_AXI_TIMEOUT = 0
+ PARAMETER C_BASEADDR = 0x30000000
+ PARAMETER C_HIGHADDR = 0x30003FFF
+ BUS_INTERFACE M_AXI = axi_interconnect_0
+ PORT S_AHB_HCLK = clock_generator_0_CLKOUT2
+ PORT S_AHB_HSEL = zscale_0_io_spi_hsel
+ PORT S_AHB_HADDR = zscale_0_io_spi_haddr
+ PORT S_AHB_HPROT = zscale_0_io_spi_hprot
+ PORT S_AHB_HTRANS = zscale_0_io_spi_htrans
+ PORT S_AHB_HSIZE = zscale_0_io_spi_hsize
+ PORT S_AHB_HWRITE = zscale_0_io_spi_hwrite
+ PORT S_AHB_HBURST = zscale_0_io_spi_hburst
+ PORT S_AHB_HWDATA = zscale_0_io_spi_hwdata
+ PORT S_AHB_HREADY_OUT = ahblite_axi_bridge_0_S_AHB_HREADY_OUT
+ PORT S_AHB_HREADY_IN = zscale_0_io_spi_hreadyin
+ PORT S_AHB_HRDATA = ahblite_axi_bridge_0_S_AHB_HRDATA
+ PORT S_AHB_HRESP = ahblite_axi_bridge_0_S_AHB_HRESP
+END
+
+BEGIN axi_quad_spi
+ PARAMETER INSTANCE = axi_quad_spi_0
+ PARAMETER HW_VER = 2.00.b
+ PARAMETER C_SCK_RATIO = 2
+ PARAMETER C_SPI_MODE = 2
+ PARAMETER C_SPI_MEMORY = 2
+ PARAMETER C_BASEADDR = 0x20000000
+ PARAMETER C_HIGHADDR = 0x20003FFF
+ PARAMETER C_INTERCONNECT_S_AXI_MASTERS = ahblite_axi_bridge_0.M_AXI
+ BUS_INTERFACE S_AXI = axi_interconnect_0
+ PORT EXT_SPI_CLK = clock_generator_0_CLKOUT2
+ PORT S_AXI_ACLK = clock_generator_0_CLKOUT2
+ PORT SPISEL = net_vcc
+ PORT SCK = axi_quad_spi_0_SCK
+ PORT SS = axi_quad_spi_0_SS
+ PORT IO0 = axi_quad_spi_0_IO0
+ PORT IO1 = axi_quad_spi_0_IO1
+ PORT IO2 = axi_quad_spi_0_IO2
+ PORT IO3 = axi_quad_spi_0_IO3
+END
+
+BEGIN axi_interconnect
+ PARAMETER INSTANCE = axi_interconnect_0
+ PARAMETER HW_VER = 1.06.a
+ PORT INTERCONNECT_ACLK = clock_generator_0_CLKOUT2
+ PORT INTERCONNECT_ARESETN = reset_0_Interconnect_aresetn
+END
+
+BEGIN hasti_debug
+ PARAMETER INSTANCE = hasti_debug_0
+ PARAMETER HW_VER = 1.00.a
+ PORT clk = clock_generator_0_CLKOUT2
+ PORT reset = reset_0_MB_Reset
+ PORT io_bus_haddr = zscale_0_io_jtag_haddr
+ PORT io_bus_hwrite = zscale_0_io_jtag_hwrite
+ PORT io_bus_hsize = zscale_0_io_jtag_hsize
+ PORT io_bus_hburst = zscale_0_io_jtag_hburst
+ PORT io_bus_hprot = zscale_0_io_jtag_hprot
+ PORT io_bus_htrans = zscale_0_io_jtag_htrans
+ PORT io_bus_hmastlock = zscale_0_io_jtag_hmastlock
+ PORT io_bus_hwdata = zscale_0_io_jtag_hwdata
+ PORT io_bus_hrdata = zscale_0_io_jtag_hrdata
+ PORT io_bus_hready = zscale_0_io_jtag_hready
+ PORT io_bus_hresp = zscale_0_io_jtag_hresp
+END
+
+BEGIN poci_gpio_x4
+ PARAMETER INSTANCE = poci_gpio_led
+ PARAMETER HW_VER = 1.00.a
+ PORT clk = clock_generator_0_CLKOUT2
+ PORT reset = reset_0_MB_Reset
+ PORT io_bus_paddr = zscale_0_io_led_paddr
+ PORT io_bus_pwrite = zscale_0_io_led_pwrite
+ PORT io_bus_psel = zscale_0_io_led_psel
+ PORT io_bus_penable = zscale_0_io_led_penable
+ PORT io_bus_pwdata = zscale_0_io_led_pwdata
+ PORT io_bus_prdata = zscale_0_io_led_prdata
+ PORT io_bus_pready = zscale_0_io_led_pready
+ PORT io_bus_pslverr = zscale_0_io_led_pslverr
+ PORT io_pin_i = net_gnd
+ PORT io_pin_o = GPIO_LED
+END
+
