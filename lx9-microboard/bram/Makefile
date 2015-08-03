@@ -27,7 +27,7 @@ $(MEM): $(HEX) mem.awk
 	awk -v SIZE=$(BRAM_SIZE) -f mem.awk $< > $@
 
 $(MEM_LN): $(MEM)
-	ln -s $< $@
+	ln -sf $< $@
 
 $(BIT): $(BMM) $(MEM) $(BIT_IN)
 	data2mem -bm $(BMM) -bd $(MEM) -bt $(BIT_IN) -o b $@
