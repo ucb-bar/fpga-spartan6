@@ -6,7 +6,7 @@
 ##
 ###################################################################
 
-BEGIN zscale
+BEGIN zscale_chisel_generated
 
 ## Peripheral Options
 OPTION IPTYPE = PERIPHERAL

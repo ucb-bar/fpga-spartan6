@@ -158,7 +158,7 @@ BEGIN hasti_bram_ctrl
  PORT io_bus_hmastlock = zscale_0_io_bootmem_hmastlock
 END
 
-BEGIN zscale
+BEGIN zscale_chisel_generated
  PARAMETER INSTANCE = zscale_0
  PARAMETER HW_VER = 1.00.a
  PORT io_dram_hsel = zscale_0_io_dram_hsel
